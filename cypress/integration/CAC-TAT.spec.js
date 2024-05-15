@@ -23,7 +23,7 @@ describe('Central de Atendimento ao Cliente TAT', function()
         cy.get('#lastName').type('Shimada')
         cy.get('#email').type('exemplo@exemplo.com')
         cy.get('#open-text-area').type(longText, { delay: 0 }) //colocando uma segundo argumento para o delay ser 0 rodando assim mais rápido
-        cy.get('button[type="submit"]').click() //lembrar que se está em aspas simples fora, o elemento dentro vai ser aspas dupla
+        cy.contains('button', 'Enviar').click() //lembrar que se está em aspas simples fora, o elemento dentro vai ser aspas dupla
 
         cy.get('.success').should('be.visible') //.algo para mostrar que é uma classe 
     })
@@ -35,7 +35,7 @@ describe('Central de Atendimento ao Cliente TAT', function()
         cy.get('#lastName').type('Shimada')
         cy.get('#email').type('exemplo@exemplo,com')
         cy.get('#open-text-area').type('Teste') //colocando uma segundo argumento para o delay ser 0 rodando assim mais rápido
-        cy.get('button[type="submit"]').click() //lembrar que se está em aspas simples fora, o elemento dentro vai ser aspas dupla
+        cy.contains('button', 'Enviar').click()//lembrar que se está em aspas simples fora, o elemento dentro vai ser aspas dupla
 
         cy.get('.error').should('be.visible') //Teste para error para ver se ta com uma classe error para ver o erro
     })
@@ -48,16 +48,56 @@ describe('Central de Atendimento ao Cliente TAT', function()
         .should('have.value', '')
     })
 
-    it.only('exibe mensagem de erro quando o telefone se torna obrigatorio ams não é preenchido', function(){
+    it('exibe mensagem de erro quando o telefone se torna obrigatorio ams não é preenchido', function()
+    {
         cy.get('#firstName').type('Yuki')
         cy.get('#lastName').type('Shimada')
         cy.get('#email').type('exemplo@exemplo.com')
         cy.get('#phone-checkbox').click() //marcou o campo do telefone tornando o telefone obrigatório
         cy.get('#open-text-area').type('Teste') 
-        cy.get('button[type="submit"]').click()
+        cy.contains('button', 'Enviar').click() //usar Contens primeiro arumento o local e o segundo o texto que vai estar escrito dentro do bottom
 
         cy.get('.error').should('be.visible')
+    })
 
+    it('preenche e limpa os campos nome, sobrenome, email e telefone', function()
+    {
+        cy.get('#firstName')
+            .type('Yuki')
+            .should('have.value', 'Yuki')
+            .clear() //Limpoar o campo escrito
+            .should('have.value', '')
+
+        cy.get('#lastName')
+            .type('Shimada')
+            .should('have.value', 'Shimada')
+            .clear()
+            .should('have.value', '')
+
+        cy.get('#email')
+            .type('exemplo@exemplo.com')
+            .should('have.value', 'exemplo@exemplo.com')
+            .clear()
+            .should('have.value', '')
+
+        cy.get('#phone')
+            .type('999999999')
+            .should('have.value', '999999999')
+            .clear()
+            .should('have.value', '')
+    })
+
+    it('exibe mensagem de erro ao submeter o formulário sem preencher os campos obrigatórios', function()
+    {
+        cy.contains('button', 'Enviar').click()
+
+        cy.get('.error').should('be.visible')
+    })
+
+    it.only('envia o formuário com sucesso usando um comando customizado', function() //criação de comandos costumizados
+    {
+        cy.fillMandatoryFieldsAndSubmit() //como é uma função sempre coloca ()
+        cy.get('.success').should('be.visible')
     })
 
 })
