@@ -1,8 +1,9 @@
 //Como adicionar um novo comando
 //Criando: 
 //Adiciona um nome do comando aqui dentro
+
 /* Adcionar comandos mas para isso sempre tem que lembrar de importar na parte de index assim que criar a pasta nova*/ 
-cypress.Commands.add('fillMandatoryFieldsAndSubmit', function()
+Cypress.Commands.add('fillMandatoryFieldsAndSubmit', function()
 {
     cy.get('#firstName').type('Yuki')
     cy.get('#lastName').type('Shimada')

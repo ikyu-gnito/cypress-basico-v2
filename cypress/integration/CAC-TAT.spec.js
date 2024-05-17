@@ -48,12 +48,12 @@ describe('Central de Atendimento ao Cliente TAT', function()
         .should('have.value', '')
     })
 
-    it('exibe mensagem de erro quando o telefone se torna obrigatorio ams não é preenchido', function()
+    it('exibe mensagem de erro quando o telefone se torna obrigatorio mas não é preenchido', function()
     {
         cy.get('#firstName').type('Yuki')
         cy.get('#lastName').type('Shimada')
         cy.get('#email').type('exemplo@exemplo.com')
-        cy.get('#phone-checkbox').click() //marcou o campo do telefone tornando o telefone obrigatório
+        cy.get('#phone-checkbox').check() //marcou o campo do telefone tornando o telefone obrigatório
         cy.get('#open-text-area').type('Teste') 
         cy.contains('button', 'Enviar').click() //usar Contens primeiro arumento o local e o segundo o texto que vai estar escrito dentro do bottom
 
@@ -94,11 +94,61 @@ describe('Central de Atendimento ao Cliente TAT', function()
         cy.get('.error').should('be.visible')
     })
 
-    it.only('envia o formuário com sucesso usando um comando customizado', function() //criação de comandos costumizados
+    it('envia o formuário com sucesso usando um comando customizado', function() //criação de comandos costumizados
     {
         cy.fillMandatoryFieldsAndSubmit() //como é uma função sempre coloca ()
         cy.get('.success').should('be.visible')
     })
 
+    it('seleciona um produto (YouTube) por seu texto', function()
+    {
+        cy.get('#product')
+         .select('YouTube')
+         .should('have.value', 'youtube')
+    })
+
+    it('seleciona um produto (Mentoria) por seu valor (value)', function()
+    {
+        cy.get('#product')
+         .select('mentoria')
+         .should('have.value', 'mentoria')//armazenar em uma variavel para poder reutilizar o código
+    })
+
+    it('seleciona um produto (Blog) por seu índice', function()
+    {
+        cy.get('#product')
+         .select(1)
+         .should('have.value', 'blog')
+    })
+
+    //Por questão de semantica se coloca .check() por causa do .click()
+    it('marca o tipo de atendimento "Feedback"', function()
+    {
+        cy.get('input[type="radio"][value="feedback"]')
+         .check()
+         .should('have.value', 'feedback')
+    })
+
+    it('marca cada tipo de atendimento', function()
+    {
+        cy.get('input[type="radio"]')
+         .should('have.length', 3)
+         .each(function($radio)
+        {
+            cy.wrap($radio).check()
+            cy.wrap($radio).should('be.checked')
+        })
+        
+    })
+
+    it('marca ambos checkboxes, depois desmarca o último', function()
+    {
+        cy.get('input[type="checkbox"]')
+         .check()
+         .should('be.checked')
+         .last() //ultimo elemento
+         .uncheck() //tira o check é bom para não selecionar algo sem querer
+         .should('not.be.checked')
+    })
 })
   
