@@ -150,5 +150,49 @@ describe('Central de Atendimento ao Cliente TAT', function()
          .uncheck() //tira o check é bom para não selecionar algo sem querer
          .should('not.be.checked')
     })
+
+    it("seleciona um arquivo da pasta fixtures", function()
+    {
+        cy.get("input[type='file']#file-upload") //aqui vai pegar o campo upload 
+            .should("not.have.value")//verifica que não tem valor
+            .selectFile("./cypress/fixtures/example.json") //caminho de onde está a pasta fixtures
+            .should(function($input)//para receber uma função de callback
+            {
+                expect($input[0].files[0].name).to.equal("example.json")//para pegar o primeiro array
+            })
+    })
+
+    it('seleciona um arquivo simulando um drag-and-drop', function()
+    {
+        cy.get('input[type="file"]')
+          .should('not.have.value')
+          .selectFile('./cypress/fixtures/example.json', { action: 'drag-drop'})
+          .should(function($input){
+            expect($input[0].files[0].name).to.equal('example.json')
+          })
+    })
+
+    it('seleciona um arquivo utilizando uma fixture para a qual foi dada um alias', function()
+    {
+        cy.fixture('example').as('sampleFile') // nomear os itens para poder utilizar em baixo 
+        cy.get('input[type="file"]')
+          .selectFile('@sampleFile')
+          .should(function($input){
+            expect($input[0].files[0].name).to.equal('example')
+          })
+    })
+
+    it('verifica que a política de privacidade abre em outra aba sem a necessidade de um clique', function()
+    {
+        cy.get('#privacy a').should('have.attr', 'target', '_blank')//blank é o padrão para ir abrir outra tela
+        //attr é para atributo dentro da propriedade
+    })
+
+    it('acessa a página da política de privacidade removendo o target e então clicando no link', function()
+    {
+        cy.get('#privacy a')
+          .invoke('removeAttr', 'target') //invoca algo ? remove o atributo
+          .click()
+    })
 })
   
